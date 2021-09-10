@@ -114,7 +114,7 @@ let projectPath = projectPathOption.value ?? "."
 let isForce = isForceOption.value
 let excludePaths = excludePathOption.value ?? []
 let resourceExtentions = resourceExtOption.value ?? ["imageset", "jpg", "png", "gif", "pdf"]
-let fileExtensions = fileExtOption.value ?? ["h", "m", "mm", "swift", "xib", "storyboard", "plist"]
+let fileExtensions = fileExtOption.value ?? ["h", "m", "mm", "swift", "xib", "storyboard", "plist", "json"]
 
 let fengNiao = FengNiao(projectPath: projectPath,
                         excludedPaths: excludePaths,
@@ -145,12 +145,13 @@ if unusedFiles.isEmpty {
 }
 
 if !isForce {
-    var result = promptResult(files: unusedFiles)
+    // customed here, for we want results listed without questions asked
+    var result = Action.list
     while result == .list {
         for file in unusedFiles.sorted(by: { $0.size > $1.size }) {
             print("\(file.readableSize) \(file.path.string)")
         }
-        result = promptResult(files: unusedFiles)
+        result = .done
     }
     
     switch result {
@@ -160,6 +161,9 @@ if !isForce {
         break
     case .ignore:
         print("Ignored. Nothing to do, bye!".green.bold)
+        exit(EX_OK)
+    case .done:
+        print("All unsed files listed, bye!")
         exit(EX_OK)
     }
 }

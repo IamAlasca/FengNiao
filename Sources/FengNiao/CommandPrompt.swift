@@ -31,6 +31,7 @@ public enum Action {
     case list
     case delete
     case ignore
+    case done
 }
 
 public func promptResult(files: [FileInfo]) -> Action {
