@@ -241,11 +241,21 @@ public struct FengNiao {
                 
                 let searchRules = fileType?.searchRules(extensions: resourceExtensions) ??
                                   [PlainImageSearchRule(extensions: resourceExtensions)]
+//                print("aaron: search rules are \(searchRules)")
                 
+                if subPath.string.contains("Contents.json") {
+//                    print("aaron: filter with subPath \(subPath)")
+                    continue
+                }
                 let content = (try? subPath.read()) ?? ""
                 result.append(contentsOf: searchRules.flatMap {
                     $0.search(in: content).map { name in
                         let p = Path(name)
+                        
+//                        if content.contains("icon_radio_hide") { // test code
+//                            print("aaron: huhu  we found it \(subPath)")
+//                            print("aaron: resource extensions are \(resourceExtensions), p is \(p)")
+//                        }
                         guard let ext = p.extension else { return name }
                         return resourceExtensions.contains(ext) ? p.lastComponentWithoutExtension : name
                     }
